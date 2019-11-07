@@ -1,6 +1,9 @@
 package com.juaracoding.caribuku;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 
 import com.juaracoding.caribuku.APIService.APIClient;
 import com.juaracoding.caribuku.APIService.APIInterfacesRest;
+import com.juaracoding.caribuku.model.buku.Book;
 import com.juaracoding.caribuku.model.buku.ModelBuku;
 import com.juaracoding.caribuku.model.category.ModelCategory;
 import com.juaracoding.caribuku.model.category.Result;
@@ -35,6 +39,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     Spinner categorySpinner;
     Button btnSearch;
+    RecyclerView rv ;
 
    ModelCategory modelCategories;
     @Override
@@ -42,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final EditText etDate = findViewById(R.id.et_date);
+        rv = findViewById(R.id.lstBook);
 
 
         final DateTimePicker.Builder builder = new DateTimePicker.Builder(this, R.style.Theme_AppCompat);
@@ -157,12 +163,15 @@ public class MainActivity extends AppCompatActivity {
         category.enqueue(new Callback<ModelBuku>() {
             @Override
             public void onResponse(Call<ModelBuku> call, Response<ModelBuku> response) {
-                ModelBuku dataCategory = response.body();
+                ModelBuku dataBuku = response.body();
 
 
                 if (response.body() != null) {
 
-
+                    BukuAdapter bukuAdapter = new BukuAdapter(dataBuku.getResults().getBooks());
+                    rv.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    rv.setItemAnimator(new DefaultItemAnimator());
+                    rv.setAdapter(bukuAdapter);
                   //  dataCategory.getResults().getBooks()
 
 
